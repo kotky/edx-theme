@@ -1,6 +1,6 @@
 ## mako
 <%namespace name='static' file='static_content.html'/>
-<%namespace file='main.html' import="login_query, stanford_theme_enabled"/>
+<%namespace file='main.html' import="login_query"/>
 <%!
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
@@ -37,7 +37,8 @@ site_status_msg = get_site_status_msg(course_id)
 % endif
 </%block>
 
-  <header id="global-navigation" class="global ${"slim" if course else ""}" >
+  <!-- <header id="global-navigation" class="global ${"slim" if course else ""}" > -->
+  <header id="global-navigation" class="global" >
     <nav class="nav-wrapper" aria-label="${_('Global')}">
     <div class="background-navigation-wrapper">
     <h1 class="logo">
@@ -52,7 +53,7 @@ site_status_msg = get_site_status_msg(course_id)
     <h2 class="course-header"><span class="provider">${course.display_org_with_default | h}:</span>
       <span class="course-number">${course.display_number_with_default | h}</span>
       <%
-        display_name = course.display_name_with_default_escaped
+        display_name = course.display_name_with_default
         if settings.FEATURES.get('CUSTOM_COURSES_EDX', False):
           ccx = get_current_ccx(course.id)
           if ccx:
@@ -66,7 +67,7 @@ site_status_msg = get_site_status_msg(course_id)
       <%block name="navigation_global_links_authenticated">
         % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
           <li class="nav-global-01">
-            <a href="${marketing_link('COURSES')}">${_('Find Courses')}</a>
+            <a href="${marketing_link('COURSES')}">${_('Course Search')}</a>
           </li>
         % endif
         %if settings.FEATURES.get('ENABLE_SYSADMIN_DASHBOARD','') and user.is_staff:
@@ -125,7 +126,6 @@ site_status_msg = get_site_status_msg(course_id)
         % endif
       </%block>
 
-      <%block name="navigation_other_global_links">
         % if not settings.FEATURES['DISABLE_LOGIN_BUTTON']:
             % if settings.FEATURES.get('ENABLE_COURSE_DISCOVERY'):
             <li class="nav-global-05">
@@ -143,11 +143,9 @@ site_status_msg = get_site_status_msg(course_id)
             % endif
 
         % endif
-      </%block>
     </ol>
 
     <ol class="right nav-courseware">
-      <%block name="navigation_sign_in">
         <li class="nav-courseware-01">
           % if not settings.FEATURES['DISABLE_LOGIN_BUTTON']:
               % if course and settings.FEATURES.get('RESTRICT_ENROLL_BY_REG_METHOD') and course.enrollment_domain:
@@ -157,12 +155,27 @@ site_status_msg = get_site_status_msg(course_id)
               % endif
           % endif
         </li>
-      </%block>
     </ol>
     % endif
     </div>
   </nav>
 </header>
+<script>
+// Set the height of the main-container dynamically so the footer is
+// fixed to the bottom.
+$(window).on('resize', function() {
+    $('.content-wrapper').css('min-height', $(window).height() - $('header').height() - $('.wrapper-footer').outerHeight(true));
+});
+
+$(document).ready(function() {
+    // Triggering the resize event to fix the footer to the bottom at the
+    // document load.
+    // A hack per file keeps the doctor away.
+    $(window).trigger('resize');
+});
+
+</script>
+
 % if course:
 <!--[if lte IE 9]>
 <div class="ie-banner" aria-hidden="true">${_('<strong>Warning:</strong> Your browser is not fully supported. We strongly recommend using {chrome_link} or {ff_link}.').format(chrome_link='<a href="https://www.google.com/chrome" target="_blank">Chrome</a>', ff_link='<a href="http://www.mozilla.org/firefox" target="_blank">Firefox</a>')}</div>
@@ -170,3 +183,18 @@ site_status_msg = get_site_status_msg(course_id)
 % endif
 
 <%include file="help_modal.html"/>
+
+<script type="text/javascript">
+  // decrease max-width on login-register container if on login page
+  setTimeout(function(){
+    if(window.location.href.indexOf('/login') > -1) {
+      $('.login-register').css("max-width",450);
+    } else {
+      $('.login-register').css("max-width",550);
+    }
+  }, 100);
+  /*$(document).on('load','select', function(){
+  // hack to change default select value on register page without editing edx-platform code
+      $(this).text('');
+    });*/
+</script>

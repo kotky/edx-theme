@@ -1,9 +1,43 @@
-// Theming overrides for sample theme
-@import 'overrides-lms-main-variables';
-
-// Theming overrides for sample theme
-@import 'overrides-lms-main-css';
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700);
 
 // import the rest of the application
 @import 'lms/static/sass/lms-main';
+
+// Theming overrides for sample theme
+@import 'overrides-lms-main-variables';
+
+// Theming overrides for ee theme
+
+@import 'overrides-lms-main-css';
+
+@import 'multicourse/courses';
+
+@import 'views/homepage';
+
+@import 'views/login-register';
+
+@import 'multicourse/home';
+
+@import 'multicourse/course_about';
+
+@import 'multicourse/dashboard';
+
+@import 'search/search';
+
+@import 'shared/header';
+
+@import 'discussion/discussion';
+
+@import 'discussion/elements/navigation';
+
+@import 'discussion/views/thread';
+
+@import 'base/layouts';
+
+@import 'instructor/instructor_2';
+
+@import 'developer';
+
+
+
 
